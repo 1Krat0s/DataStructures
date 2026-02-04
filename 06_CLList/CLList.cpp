@@ -121,25 +121,3 @@ bool CLList<T>::empty() const
 {
     return (list_size == 0);
 }
-
-template <typename T>
-void CLList<T>::print_backwards() const 
-{
-    if (empty()) 
-    {
-        return;
-    }
-    DLLNode<T>* cur = tail;
-
-    do 
-    {
-        std::cout << cur->data;
-        if (cur != tail->next) 
-        { // not the last node
-            std::cout << " <- ";
-        }
-        cur = cur->prev;
-    } while (cur != tail);
-    
-    std::cout << std::endl;
-}
