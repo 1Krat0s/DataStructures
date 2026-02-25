@@ -1,4 +1,5 @@
 #include "BST.hpp"
+#include <iostream>
 
 template <typename T>
 BST<T>::BST()
@@ -51,7 +52,7 @@ void BST<T>::inorder() const
 {
     std::cout << "Inorder: [ ";
     inorder(root);
-    std::cout << " ]\n";
+    std::cout << "]\n";
 }
 
 template <typename T>
@@ -61,9 +62,35 @@ void BST<T>::inorder(BTNode<T>* node) const
     {
         return;
     }
-
+    
     inorder(node->left);
     std::cout << node->data << ' ';
     inorder(node->right);
+    
+}
 
+template <typename T>
+void BST<T>::insert_recursive(const T& val)
+{
+    root = insert_recursive(root, val);
+}
+
+template <typename T>
+BTNode<T>* BST<T>::insert_recursive(BTNode<T>* node, const T& val)
+{
+    if (!node)
+    {
+        return new BTNode<T>(val);
+    }
+
+    if (val > node->data)
+    {
+        node->right = insert_recursive(node->right, val);
+        return node;
+    }
+    else
+    {
+        node->left = insert_recursive(node->left, val);
+        return node;
+    }
 }
