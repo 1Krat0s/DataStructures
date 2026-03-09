@@ -82,7 +82,7 @@ BTNode<T>* BST<T>::insert_recursive(BTNode<T>* node, const T& val)
     {
         return new BTNode<T>(val);
     }
-
+    
     if (val > node->data)
     {
         node->right = insert_recursive(node->right, val);
@@ -93,4 +93,328 @@ BTNode<T>* BST<T>::insert_recursive(BTNode<T>* node, const T& val)
         node->left = insert_recursive(node->left, val);
         return node;
     }
+}
+
+template <typename T>
+void BST<T>::preorder() const 
+{
+    std::cout << "Preorder: [ ";
+    preorder(root);
+    std::cout << "]\n";
+}
+
+template <typename T>
+void BST<T>::preorder(BTNode<T>* node) const 
+{
+    if (!node) 
+    {
+        return;
+    }
+    
+    std::cout << node->data << ' '; 
+    preorder(node->left);           
+    preorder(node->right);          
+}
+
+template <typename T>
+void BST<T>::postorder() const 
+{
+    std::cout << "Postorder: [ ";
+    postorder(root);
+    std::cout << "]\n";
+}
+
+template <typename T>
+void BST<T>::postorder(BTNode<T>* node) const 
+{
+    if (!node) 
+    {
+        return;
+    }
+    
+    postorder(node->left);          
+    postorder(node->right);         
+    std::cout << node->data << ' '; 
+}
+
+template <typename T>
+bool BST<T>::isFullTree() const
+{
+    return isFullTree(root);
+}
+
+template <typename T>
+bool BST<T>::isFullTree(BTNode<T>* node) const
+{
+    if (!node)
+    {
+        return true;
+    }
+    
+    if (node->hasOneChild())
+    {
+        return false;
+    }
+    return isFullTree(node->left) && isFullTree(node->right);
+}
+
+template <typename T>
+BTNode<T>* BST<T>::search(const T& val) const
+{
+    BTNode<T>* cur = root;
+    
+    while (cur)
+    {
+        if (cur->data == val) // Found the value
+        {
+            return cur;
+        }
+        if (cur->data > val) // Value is less than current
+        {
+            cur = cur->left;
+        }
+        else
+        {
+            cur = cur->right;
+        }
+    }
+    
+    return nullptr;
+}
+
+template <typename T>
+BTNode<T>* BST<T>::search_parent(const T& val) const 
+{
+    if (!root || root->data == val) return nullptr;
+
+    BTNode<T>* cur = root;
+    while (cur) 
+    {
+        if ((cur->left && cur->left->data == val) || (cur->right && cur->right->data == val)) 
+            {
+            return cur;
+        }
+
+        if (cur->data > val)
+        {
+            cur = cur->left;
+        }
+        else
+        {
+            cur = cur->right;
+        }
+    }
+    return nullptr;
+}
+
+template <typename T>
+BTNode<T>* BST<T>::getMinNode() const
+{
+    if (!root)
+    {
+        return nullptr;
+    }
+    
+    BTNode<T>* cur = root;
+    
+    while (cur)
+    {
+        cur = cur->left;
+    }
+    return cur;
+}
+
+template <typename T>
+void BST<T>::deleteLeaf(BTNode<T>* child, BTNode<T>* parent)
+{
+    if (parent == nullptr)
+    {
+        root = nullptr;
+    }
+    else if (parent->left == child)
+    {
+        parent->left = nullptr;
+    }
+    else
+    {
+        parent->right = nullptr;
+    }
+
+    delete child;
+}
+
+template <typename T>
+void BST<T>::deleteNodeWithOneChild(BTNode<T>* child, BTNode<T>* parent)
+{
+    BTNode<T>* targetChild;
+    
+    if (child->left != nullptr)
+    {
+        targetChild = child->left;
+    }
+    else
+    {
+        targetChild = child->right;
+    }
+    
+    if (parent == nullptr)
+    {
+        root = targetChild;
+    }
+    else
+    {
+        if (parent->left == child)
+        {
+            parent->left = targetChild;
+        }
+        else
+        {
+            parent->right = targetChild;
+        }
+    }
+    
+    delete child;
+}
+
+template <typename T>
+BTNode<T>* BST<T>::getMinNode(BTNode<T>* node) const
+{
+    if (node == nullptr) 
+    {
+        return nullptr;
+    }
+
+    BTNode<T>* current = node;
+    while (current->left != nullptr) 
+    {
+        current = current->left;
+    }
+    
+    return current;
+}
+
+template <typename T>
+void BST<T>::deleteNode(const T& val)
+{
+    BTNode<T>* node = search(val);
+
+    if (!node)
+    {
+        std::cout << "Delete: No value in the BST\n";
+        return;
+    }
+
+    BTNode<T>* parent = search_parent(val);
+
+    if (node->isLeaf())
+    {
+        deleteLeaf(node, parent);
+    }
+    else if (node->hasOneChild())
+    {
+        deleteNodeWithOneChild(node, parent);
+    }
+    else // The node has two children
+    {
+        deleteNodeWithTwoChildren(node);
+    }
+}
+
+template <typename T>
+void BST<T>::deleteNodeWithTwoChildren(BTNode<T>* node)
+{
+    BTNode<T>* min_right_node = getMinNode(node->right);
+    T min_val = min_right_node->data;
+
+    if (min_right_node->isLeaf())
+    {
+        deleteLeaf(min_right_node, search_parent(min_val));
+    }
+    else if (min_right_node->hasOneChild())
+    {
+        deleteNodeWithOneChild(min_right_node, search_parent(min_val));
+    }
+    
+    node->data = min_val;
+}
+
+template <typename T>
+void BST<T>::print() const
+{
+    std::cout << "================================\n";
+    print("", root, false);
+    std::cout << "================================\n";
+}
+
+template <typename T>
+void BST<T>::print(const std::string& prefix, BTNode<T>* node, bool isRight) const
+{
+    if (!node)
+    {
+        return;
+    }
+
+    std::cout << prefix;
+    
+    if (node != root)
+    {
+        std::cout << (isRight ? "R----" : "L----");
+    }
+    else
+    {
+        std::cout << "---";
+    }
+
+    // Print the value of the node
+    std::cout << "[" << node->data << ", " << getHeight(node) << ", " << getBalance(node) << "]" << std::endl;
+    
+    // Go to the next level of the tree
+    print(prefix + "   ", node->right, true);
+    print(prefix + "   ", node->left, false);
+}
+
+template <typename T>
+int BST<T>::getHeight(const BTNode<T>* node) const
+{
+    if (!node)
+    {
+        return 0;
+    }
+    
+    int left_height = getHeight(node->left);
+    int right_height = getHeight(node->right);
+    
+    return ((left_height > right_height) ? left_height + 1 : right_height + 1);
+}
+
+
+template <typename T>
+int BST<T>::getBalance(const BTNode<T>* node) const
+{
+    if (!node)
+    {
+        return 0;
+    }
+
+    return (getHeight(node->left) - getHeight(node->right));
+}
+
+template <typename T>
+void BST<T>::rotateRight(BTNode<T>* & node)
+{
+    if (!node || !node->left)
+    {
+        return;
+    }
+
+    BTNode<T>* left_kid = node->left;
+    node->left = left_kid->right;
+    left_kid->right = node;
+    node = left_kid;
+}
+
+template <typename T>
+void BST<T>::rotateLeft(BTNode<T>* & node)
+{
+
 }

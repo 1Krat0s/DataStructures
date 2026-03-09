@@ -10,6 +10,20 @@ class BTNode
         BTNode<T>* right;
 
         BTNode(const T& val = T(), BTNode<T>* l = nullptr, BTNode<T>* r = nullptr) : data(val), left(l), right(r) {}; 
+
+        bool isLeaf() const
+        {
+            return (!left && !right);
+        }
+        bool hasOneChild() const
+        {
+            return (!isLeaf() && !hasTwoChildren());
+        }
+        bool hasTwoChildren() const
+        {
+            return (left && right);
+        }
+
 };
 
 #endif
