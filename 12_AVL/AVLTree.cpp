@@ -7,6 +7,7 @@ AVLTree<T>::AVLTree()
     root = nullptr;
 }
 
+
 template <typename T>
 bool AVLTree<T>::empty() const 
 {
@@ -20,26 +21,27 @@ void AVLTree<T>::insert(const T& val)
 }
 
 template <typename T>
-void AVLTree<T>::insert(const T& val, AVLNode<T>*& node)
+void AVLTree<T>::insert(const T& val, AVLNode<T>*& node) 
 {
-    if (!node)
+    if (!node) 
     {
         node = new AVLNode<T>(val);
     }
-    else if (val < node->data)
+    else if (val < node->data) 
     {
         insert(val, node->left);
     }
-    else if (val > node->data)
+    else if (val > node->data) 
     {
         insert(val, node->right);
     }
-    
+
     // Update the node height
     node->height = std::max(getHeight(node->left), getHeight(node->right)) + 1;
 
     balance(node);
 }
+
 
 template <typename T>
 void AVLTree<T>::inorder() const 
@@ -76,6 +78,7 @@ bool AVLTree<T>::isFullTree(AVLNode<T>* node) const
     {
         return true;
     }
+
     if (node->hasOneChild()) 
     {
         return false;
@@ -124,7 +127,7 @@ AVLNode<T>* AVLTree<T>::getMinNode(AVLNode<T>* node) const
     {
         return nullptr;
     }
-    else if (!node->left)
+    else if (!node->left) 
     {
         return node;
     }
@@ -139,12 +142,14 @@ void AVLTree<T>::deleteLeaf(AVLNode<T>* child, AVLNode<T>* parent)
     {
         return;
     }
+
     if (!parent) 
     { // This is the root
         delete root;
         root = nullptr;
         return;
     }
+
     if (parent->left == child) 
     { //left kid
         parent->left = nullptr;
@@ -170,12 +175,12 @@ void AVLTree<T>::deleteNodeWithOneChild(AVLNode<T>* child, AVLNode<T>* parent)
     }
 
     AVLNode<T>* grand_kid = (child->right) ? child->right : child->left;
-    
+
     if (parent->right == child) 
     {
         parent->right = grand_kid;
     }
-
+    
     if (parent->left == child) 
     {
         parent->left = grand_kid;
@@ -261,34 +266,34 @@ void AVLTree<T>::remove(const T& val)
 }
 
 template <typename T>
-void AVLTree<T>::remove(const T& val, AVLNode<T>*& node)
+void AVLTree<T>::remove(const T& val, AVLNode<T>*& node) 
 {
-    if (!node)
+    if (!node) 
     {
         return;
     }
-    else if (val < node->data)
+    else if (val < node->data) 
     {
         remove(val, node->left);
     }
-    else if (val > node->data)
+    else if (val > node->data) 
     {
         remove(val, node->right);
     }
-    else if (node->hasTwoChildren())
+    else if (node->hasTwoChildren()) 
     {
         node->data = getMinNode(node->right)->data;
         remove(node->data, node->right);
     }
-    else // Leaf or one child
-    {
+    else 
+    { // Leaf or one child
         AVLNode<T>* to_delete = node;
         node = (node->left) ? node->left : node->right;
         delete to_delete;
     }
 
     // Update the height
-    if (node)
+    if (node) 
     {
         node->height = std::max(getHeight(node->left), getHeight(node->right)) + 1;
     }
@@ -310,21 +315,14 @@ void AVLTree<T>::deleteNodeWithTwoChildren(AVLNode<T>* node)
     {
         deleteNodeWithOneChild(min_right_node, searchParent(min_val));
     }
-    
+
     node->data = min_val;
 }
 
 template <typename T>
 int AVLTree<T>::getHeight(const AVLNode<T>* node) const 
 {
-    if (!node)
-    {
-        return 0;
-    }
-    else
-    {
-        return node->height;
-    }
+    return (!node) ? 0 : node->height;
 }
 
 
@@ -385,8 +383,7 @@ AVLNode<T>*& AVLTree<T>::searchRef(const T& val)
 }
 
 template <typename T>
-AVLNode<T>*& AVLTree<T>::searchRef(const T& val, AVLNode<T>*& node) 
-{
+AVLNode<T>*& AVLTree<T>::searchRef(const T& val, AVLNode<T>*& node) {
     if (!node || node->data == val) 
     {
         return node;
@@ -412,10 +409,10 @@ void AVLTree<T>::rotateRightRef(AVLNode<T>*& node)
     AVLNode<T>* left_kid = node->left;
     node->left = left_kid->right;
     left_kid->right = node;
-    
     // Update heights
     node->height = std::max(getHeight(node->left), getHeight(node->right)) + 1;
     left_kid->height = std::max(getHeight(left_kid->left), node->height) + 1;
+
 
     node = left_kid;
 }
@@ -431,7 +428,6 @@ void AVLTree<T>::rotateLeftRef(AVLNode<T>*& node)
     AVLNode<T>* right_kid = node->right;
     node->right = right_kid->left;
     right_kid->left = node;
-    
     // Update heights
     node->height = std::max(getHeight(node->left), getHeight(node->right)) + 1;
     right_kid->height = std::max(getHeight(right_kid->right), node->height) + 1;
@@ -439,6 +435,7 @@ void AVLTree<T>::rotateLeftRef(AVLNode<T>*& node)
 
     node = right_kid;
 }
+
 
 template <typename T>
 void AVLTree<T>::rotateLeftDoubleRef(AVLNode<T>*& node) 

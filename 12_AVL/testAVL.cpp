@@ -4,22 +4,19 @@
 #include <iostream>
 #include <string>
 
-int main(void) 
-{
+int main(void) {
     AVLTree<int> tree;
-
-    for (int i = 1; i < 20; i++)
+    for (int i = 1; i < 20; i++) 
     {
-        std::cout << "Insert " << i << std::endl; 
+        std::cout << "Insert " << i << std::endl;
         tree.insert(i);
         tree.print();
     }
     
     std::cout << "DELETION\n";
-    
-    for (int i = 19; i >= 1; i--)
+    for (int i = 19; i >= 1; i--) 
     {
-        std::cout << "Remove " << i << std::endl; 
+        std::cout << "Remove " << i << std::endl;
         tree.remove(i);
         tree.print();
     }
@@ -27,5 +24,3 @@ int main(void)
     
     return 0;
 }
-
-

@@ -6,7 +6,7 @@ class AVLNode
 {
     public:
         AVLNode(const T& val = T(), AVLNode<T>* l = nullptr, AVLNode<T>* r = nullptr) : data(val), left(l), right(r), height(1) { }
-    
+        
         bool isLeaf() const 
         {
             return !left && !right;
