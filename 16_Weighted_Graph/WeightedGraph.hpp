@@ -1,0 +1,56 @@
+#ifndef WEIGHTEDGRAPH_HPP
+#define WEIGHTEDGRAPH_HPP
+#include <vector>
+
+class Edge
+{
+    public:
+        int neighbor;
+        int weight;
+
+        Edge(int n, int w) : neighbor(n), weight(w) { };
+    
+    private:
+        bool operator>(const Edge& e) const
+        {
+            return this->weight > e.weight;
+        }
+        
+        bool operator<(const Edge& e) const
+        {
+            return this->weight < e.weight;
+        }
+
+};
+
+
+template <typename T>
+class WeightedGraph 
+{
+    public:
+
+        void insertVertex(const T& v);
+        void insertEdge(const T& v1, const T& v2, int weight = 1);
+        void print() const;
+
+        // void DFS() const;
+        // void BFS(int start = 0) const;
+        int shortestPath(const T& src, const T& dest) const;
+        // bool isConnected() const;
+
+
+    private:
+        std::vector<T> vertices; 
+        std::vector<std::vector<Edge>> edges; 
+
+        
+        int getVertexIndex(const T& vs) const;
+
+        bool hasEdge(int i1, int i2) const;
+        // void DFS(int i, std::vector<bool>& visited) const;
+
+};
+
+#include "WeightedGraph.tpp"
+
+#endif
